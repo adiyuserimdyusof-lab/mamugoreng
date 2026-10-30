@@ -1,0 +1,89 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #b81f17;
+    }
+    #mark-lockup {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+    #mark-swash {
+      width: 560px;
+      height: 90px;
+      margin-bottom: 28px;
+    }
+    #mark-swash path {
+      fill: none;
+      stroke: #ffd04d;
+      stroke-width: 20;
+      stroke-linecap: round;
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+    }
+    #mark-word {
+      font-family: "Archivo Black", sans-serif;
+      font-size: 200px;
+      line-height: 1;
+      letter-spacing: -0.02em;
+      color: #fff3dc;
+      white-space: nowrap;
+    }
+    #mark-word span {
+      display: inline-block;
+      opacity: 0;
+    }
+    #mark-tag {
+      margin-top: 40px;
+      font-family: "Inter", sans-serif;
+      font-weight: 700;
+      font-size: 52px;
+      letter-spacing: 0.04em;
+      color: #ffd04d;
+    }
+    #mark-tag span {
+      display: inline-block;
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="mark" data-width="1920" data-height="1080">
+    <div id="mark-lockup">
+      <svg id="mark-swash" viewBox="0 0 560 90">
+        <path
+          pathLength="1"
+          d="M14 60 C 70 10, 120 10, 160 45 S 250 85, 290 45 S 380 5, 420 40 S 500 80, 546 30"
+        />
+      </svg>
+      <h1 id="mark-word"><span>M</span><span>A</span><span>M</span><span>U</span><span>G</span><span>O</span><span>R</span><span>E</span><span>N</span><span>G</span></h1>
+      <p id="mark-tag"><span>Pedas.</span> <span>Panas.</span> <span>Sedap.</span></p>
+    </div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // A noodle swash draws itself, then the name lands letter by letter.
+    tl.fromTo("#mark-swash path", { strokeDashoffset: 1 }, { strokeDashoffset: 0, duration: 0.7, ease: "power3.inOut" }, 0.25);
+    tl.fromTo(
+      "#mark-word span",
+      { opacity: 0, y: 50, filter: "blur(6px)" },
+      { opacity: 1, y: 0, filter: "blur(0px)", duration: 0.55, ease: "expo.out", stagger: 0.06 },
+      0.55,
+    );
+
+    // Tagline, word by word, then everything holds still to the end.
+    tl.fromTo(
+      "#mark-tag span",
+      { opacity: 0, filter: "blur(6px)" },
+      { opacity: 1, filter: "blur(0px)", duration: 0.15, ease: "power4.out", stagger: 0.3 },
+      1.75,
+    );
+
+    window.__timelines["mark"] = tl;
+  </script>
+</template>

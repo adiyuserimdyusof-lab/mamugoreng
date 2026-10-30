@@ -1,0 +1,106 @@
+<template>
+  <style>
+    #root {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      background: #120c08;
+    }
+    #heat-glow {
+      position: absolute;
+      left: 360px;
+      top: 640px;
+      width: 1200px;
+      height: 1200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 106, 26, 0.85) 0%, rgba(232, 84, 26, 0.35) 38%, rgba(18, 12, 8, 0) 70%);
+    }
+    #heat-core {
+      position: absolute;
+      left: 860px;
+      top: 1140px;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: #e8541a;
+    }
+    .heat-spark {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+    }
+    .heat-word {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: "Archivo Black", sans-serif;
+      font-size: 200px;
+      letter-spacing: -0.03em;
+      color: #fff3dc;
+    }
+    .heat-word span {
+      display: inline-block;
+      opacity: 0;
+    }
+  </style>
+  <div id="root" data-composition-id="heat" data-width="1920" data-height="1080">
+    <div id="heat-glow" data-layout-allow-overflow></div>
+      <span class="heat-spark" style="left:760px;top:900px;width:6px;height:6px;background:#ff6a1a"></span>
+      <span class="heat-spark" style="left:897px;top:953px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:1034px;top:1006px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:771px;top:939px;width:6px;height:6px;background:#ff6a1a"></span>
+      <span class="heat-spark" style="left:908px;top:992px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:1045px;top:925px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:782px;top:978px;width:6px;height:6px;background:#ff6a1a"></span>
+      <span class="heat-spark" style="left:919px;top:911px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:1056px;top:964px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:793px;top:1017px;width:6px;height:6px;background:#ff6a1a"></span>
+      <span class="heat-spark" style="left:930px;top:950px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:1067px;top:1003px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:804px;top:936px;width:6px;height:6px;background:#ff6a1a"></span>
+      <span class="heat-spark" style="left:941px;top:989px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:1078px;top:922px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:815px;top:975px;width:6px;height:6px;background:#ff6a1a"></span>
+      <span class="heat-spark" style="left:952px;top:908px;width:6px;height:6px;background:#ffb347"></span>
+      <span class="heat-spark" style="left:1089px;top:961px;width:6px;height:6px;background:#ffb347"></span>
+    <div id="heat-core" data-layout-allow-overflow data-layout-allow-occlusion></div>
+    <div id="heat-w1" class="heat-word"><span>Fire.</span></div>
+    <div id="heat-w2" class="heat-word"><span>Wok.</span></div>
+    <div id="heat-w3" class="heat-word"><span>Noodles.</span></div>
+  </div>
+  <script>
+    const tl = gsap.timeline({ paused: true });
+
+    // The wok's heat rises from below the frame.
+    tl.fromTo("#heat-glow", { scale: 0.55, opacity: 0.7, y: 120 }, { scale: 1, opacity: 1, y: 0, duration: 1.4, ease: "expo.out" }, 0);
+
+    // Sparks: two launches each, positions fixed by index so every frame renders the same.
+    document.querySelectorAll(".heat-spark").forEach((el, i) => {
+      for (let n = 0; n < 2; n++) {
+        const t = 0.2 + ((i * 0.23) % 1.6) + n * 1.7;
+        const rise = 420 + ((i * 97) % 380);
+        const drift = ((i * 53) % 160) - 80;
+        tl.fromTo(el, { x: 0, y: 0, opacity: 0 }, { x: drift, y: -rise, opacity: 1, duration: 0.35, ease: "power2.out" }, t);
+        tl.to(el, { x: drift * 1.6, y: -rise * 1.5, opacity: 0, duration: 0.9, ease: "power1.in" }, t + 0.35);
+      }
+    });
+
+    // Three words, swapped on one stage with a blur.
+    const words = ["#heat-w1 span", "#heat-w2 span", "#heat-w3 span"];
+    const starts = [0, 1.25, 2.35];
+    // "Fire." is already on screen at 0 s, so the first frame (the thumbnail) carries the title.
+    tl.fromTo(words[0], { opacity: 1, filter: "blur(0px)", scale: 1 }, { opacity: 1, duration: 0.01 }, 0);
+    words.forEach((w, i) => {
+      if (i > 0) tl.fromTo(w, { opacity: 0, filter: "blur(10px)", scale: 1.06 }, { opacity: 1, filter: "blur(0px)", scale: 1, duration: 0.18, ease: "power4.out" }, starts[i]);
+      if (i < 2) tl.to(w, { opacity: 0, filter: "blur(8px)", duration: 0.15, ease: "power2.in" }, starts[i + 1] - 0.12);
+    });
+    tl.to(words[2], { opacity: 0, filter: "blur(8px)", duration: 0.2, ease: "power2.in" }, 3.65);
+
+    // The heat's core becomes the next world.
+    tl.fromTo("#heat-core", { scale: 0, y: 0 }, { scale: 14, y: -560, duration: 0.75, ease: "power2.inOut" }, 3.7);
+
+    window.__timelines["heat"] = tl;
+  </script>
+</template>
